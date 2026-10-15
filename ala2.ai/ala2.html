@@ -1,0 +1,1614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Advanced Chatbot</title>
+
+<style>
+
+/* =========================
+   RESET
+========================= */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #6366f1;
+    --primary-dark: #4f46e5;
+
+    --background: #f3f4f6;
+    --panel: #ffffff;
+    --message-bot: #eef2ff;
+
+    --text: #111827;
+    --muted: #6b7280;
+    --border: #e5e7eb;
+
+    --shadow: 0 10px 40px rgba(0,0,0,0.12);
+}
+
+body.dark {
+    --background: #111827;
+    --panel: #1f2937;
+    --message-bot: #374151;
+
+    --text: #f9fafb;
+    --muted: #9ca3af;
+    --border: #374151;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background: var(--background);
+    color: var(--text);
+
+    height: 100vh;
+    overflow: hidden;
+
+    transition: 0.3s;
+}
+
+
+/* =========================
+   APP
+========================= */
+
+.app {
+    height: 100vh;
+    display: flex;
+}
+
+
+/* =========================
+   SIDEBAR
+========================= */
+
+.sidebar {
+    width: 260px;
+    background: var(--panel);
+    border-right: 1px solid var(--border);
+
+    padding: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    transition: 0.3s;
+}
+
+.logo {
+    font-size: 23px;
+    font-weight: bold;
+
+    margin-bottom: 25px;
+}
+
+.new-chat {
+    width: 100%;
+
+    padding: 13px;
+
+    border: none;
+    border-radius: 10px;
+
+    background: var(--primary);
+    color: white;
+
+    font-size: 15px;
+    font-weight: bold;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.new-chat:hover {
+    background: var(--primary-dark);
+    transform: translateY(-1px);
+}
+
+.sidebar-buttons {
+    margin-top: 20px;
+
+    display: flex;
+    flex-direction: column;
+
+    gap: 8px;
+}
+
+.sidebar-buttons button {
+    border: none;
+
+    background: transparent;
+
+    color: var(--text);
+
+    text-align: left;
+
+    padding: 12px;
+
+    border-radius: 8px;
+
+    cursor: pointer;
+
+    font-size: 14px;
+}
+
+.sidebar-buttons button:hover {
+    background: var(--background);
+}
+
+.sidebar-bottom {
+    margin-top: auto;
+
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 12px;
+
+    line-height: 1.6;
+}
+
+
+/* =========================
+   CHAT
+========================= */
+
+.chat-container {
+    flex: 1;
+
+    display: flex;
+    flex-direction: column;
+
+    min-width: 0;
+
+    background: var(--panel);
+}
+
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+    height: 75px;
+
+    padding: 0 25px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    border-bottom: 1px solid var(--border);
+}
+
+.profile {
+    display: flex;
+    align-items: center;
+
+    gap: 12px;
+}
+
+.avatar {
+    width: 45px;
+    height: 45px;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-size: 23px;
+
+    background: linear-gradient(
+        135deg,
+        #6366f1,
+        #8b5cf6
+    );
+}
+
+.profile h2 {
+    font-size: 17px;
+}
+
+.status {
+    color: var(--muted);
+
+    font-size: 12px;
+
+    margin-top: 3px;
+}
+
+.online {
+    display: inline-block;
+
+    width: 8px;
+    height: 8px;
+
+    background: #22c55e;
+
+    border-radius: 50%;
+
+    margin-right: 4px;
+}
+
+.mobile-menu {
+    display: none;
+
+    border: none;
+
+    background: transparent;
+
+    color: var(--text);
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+
+/* =========================
+   CHAT BOX
+========================= */
+
+.chat-box {
+    flex: 1;
+
+    overflow-y: auto;
+
+    padding: 30px;
+}
+
+.chat-box::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-box::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+
+    border-radius: 10px;
+}
+
+
+/* =========================
+   WELCOME
+========================= */
+
+.welcome {
+    max-width: 650px;
+
+    margin: 50px auto;
+
+    text-align: center;
+}
+
+.welcome-icon {
+    font-size: 60px;
+
+    margin-bottom: 15px;
+}
+
+.welcome h1 {
+    font-size: 32px;
+
+    margin-bottom: 10px;
+}
+
+.welcome p {
+    color: var(--muted);
+
+    margin-bottom: 25px;
+}
+
+.quick-buttons {
+    display: flex;
+
+    flex-wrap: wrap;
+
+    justify-content: center;
+
+    gap: 10px;
+}
+
+.quick-buttons button {
+    padding: 10px 15px;
+
+    border: 1px solid var(--border);
+
+    background: var(--panel);
+
+    color: var(--text);
+
+    border-radius: 20px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.quick-buttons button:hover {
+    border-color: var(--primary);
+
+    color: var(--primary);
+
+    transform: translateY(-2px);
+}
+
+
+/* =========================
+   MESSAGES
+========================= */
+
+.message-row {
+    display: flex;
+
+    gap: 10px;
+
+    margin-bottom: 20px;
+}
+
+.message-row.user {
+    justify-content: flex-end;
+}
+
+.message-row.bot {
+    justify-content: flex-start;
+}
+
+.small-avatar {
+    width: 35px;
+    height: 35px;
+
+    flex-shrink: 0;
+
+    border-radius: 50%;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.bot-avatar {
+    background: #6366f1;
+}
+
+.user-avatar {
+    background: #10b981;
+}
+
+.message-content {
+    max-width: min(70%, 700px);
+}
+
+.message {
+    padding: 13px 16px;
+
+    border-radius: 15px;
+
+    line-height: 1.5;
+
+    font-size: 14px;
+
+    word-wrap: break-word;
+}
+
+.bot .message {
+    background: var(--message-bot);
+
+    border-top-left-radius: 4px;
+}
+
+.user .message {
+    background: var(--primary);
+
+    color: white;
+
+    border-top-right-radius: 4px;
+}
+
+.time {
+    display: block;
+
+    margin-top: 5px;
+
+    color: var(--muted);
+
+    font-size: 10px;
+}
+
+.user .time {
+    text-align: right;
+}
+
+
+/* =========================
+   TYPING
+========================= */
+
+.typing {
+    display: none;
+
+    align-items: center;
+
+    gap: 5px;
+
+    padding: 0 30px 10px;
+
+    color: var(--muted);
+
+    font-size: 12px;
+}
+
+.typing.show {
+    display: flex;
+}
+
+.typing span {
+    width: 7px;
+    height: 7px;
+
+    border-radius: 50%;
+
+    background: var(--primary);
+
+    animation: typing 1.2s infinite;
+}
+
+.typing span:nth-child(2) {
+    animation-delay: .2s;
+}
+
+.typing span:nth-child(3) {
+    animation-delay: .4s;
+}
+
+@keyframes typing {
+
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+
+    30% {
+        transform: translateY(-5px);
+    }
+
+}
+
+
+/* =========================
+   INPUT
+========================= */
+
+.input-area {
+    padding: 15px 25px;
+
+    border-top: 1px solid var(--border);
+
+    background: var(--panel);
+}
+
+.input-wrapper {
+    max-width: 900px;
+
+    margin: auto;
+
+    display: flex;
+
+    align-items: flex-end;
+
+    gap: 10px;
+}
+
+textarea {
+    flex: 1;
+
+    resize: none;
+
+    max-height: 120px;
+
+    padding: 13px 15px;
+
+    border-radius: 12px;
+
+    border: 1px solid var(--border);
+
+    outline: none;
+
+    background: var(--background);
+
+    color: var(--text);
+
+    font-size: 14px;
+
+    font-family: inherit;
+}
+
+textarea:focus {
+    border-color: var(--primary);
+}
+
+.send {
+    width: 45px;
+    height: 45px;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: var(--primary);
+
+    color: white;
+
+    font-size: 18px;
+
+    cursor: pointer;
+
+    transition: .2s;
+}
+
+.send:hover {
+    background: var(--primary-dark);
+
+    transform: scale(1.05);
+}
+
+.send:disabled {
+    opacity: .5;
+
+    cursor: not-allowed;
+}
+
+.disclaimer {
+    text-align: center;
+
+    color: var(--muted);
+
+    font-size: 10px;
+
+    margin-top: 7px;
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .sidebar {
+        position: fixed;
+
+        left: -270px;
+
+        top: 0;
+
+        height: 100vh;
+
+        z-index: 100;
+
+        box-shadow: var(--shadow);
+    }
+
+    .sidebar.active {
+        left: 0;
+    }
+
+    .mobile-menu {
+        display: block;
+    }
+
+    .header {
+        padding: 0 15px;
+    }
+
+    .chat-box {
+        padding: 20px 15px;
+    }
+
+    .input-area {
+        padding: 10px;
+    }
+
+    .message-content {
+        max-width: 82%;
+    }
+
+    .welcome {
+        margin: 30px auto;
+    }
+
+    .welcome h1 {
+        font-size: 25px;
+    }
+
+}
+
+</style>
+</head>
+
+
+<body>
+
+<div class="app">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar" id="sidebar">
+
+        <div class="logo">
+            🤖 AI ChatBot
+        </div>
+
+        <button class="new-chat" id="newChat">
+            + New Chat
+        </button>
+
+        <div class="sidebar-buttons">
+
+            <button id="clearChat">
+                🗑️ Clear Chat
+            </button>
+
+            <button id="themeButton">
+                🌙 Dark Mode
+            </button>
+
+        </div>
+
+        <div class="sidebar-bottom">
+            <p>Advanced Chatbot</p>
+            <small>HTML • CSS • JavaScript</small>
+        </div>
+
+    </aside>
+
+
+    <!-- CHAT -->
+
+    <main class="chat-container">
+
+        <!-- HEADER -->
+
+        <header class="header">
+
+            <div class="profile">
+
+                <div class="avatar">
+                    🤖
+                </div>
+
+                <div>
+
+                    <h2>AI Assistant</h2>
+
+                    <div class="status">
+                        <span class="online"></span>
+                        Online
+                    </div>
+
+                </div>
+
+            </div>
+
+            <button class="mobile-menu" id="mobileMenu">
+                ☰
+            </button>
+
+        </header>
+
+
+        <!-- CHAT BOX -->
+
+        <section class="chat-box" id="chatBox">
+
+            <div class="welcome">
+
+                <div class="welcome-icon">
+                    🤖
+                </div>
+
+                <h1>
+                    Hello! 👋
+                </h1>
+
+                <p>
+                    I'm your AI assistant. Ask me anything!
+                </p>
+
+                <div class="quick-buttons">
+
+                    <button onclick="quickMessage('Hello')">
+                        👋 Hello
+                    </button>
+
+                    <button onclick="quickMessage('What can you do?')">
+                        ❓ What can you do?
+                    </button>
+
+                    <button onclick="quickMessage('Tell me a joke')">
+                        😂 Tell me a joke
+                    </button>
+
+                    <button onclick="quickMessage('What is JavaScript?')">
+                        💻 JavaScript
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- TYPING -->
+
+        <div class="typing" id="typing">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+            <label>
+                AI is typing...
+            </label>
+
+        </div>
+
+
+        <!-- INPUT -->
+
+        <footer class="input-area">
+
+            <div class="input-wrapper">
+
+                <textarea
+                    id="messageInput"
+                    placeholder="Type your message..."
+                    rows="1"
+                ></textarea>
+
+                <button
+                    class="send"
+                    id="sendButton"
+                >
+                    ➤
+                </button>
+
+            </div>
+
+            <p class="disclaimer">
+                AI responses are generated automatically.
+            </p>
+
+        </footer>
+
+    </main>
+
+</div>
+
+
+<script>
+
+/* =====================================
+   ELEMENTS
+===================================== */
+
+const chatBox =
+    document.getElementById("chatBox");
+
+const input =
+    document.getElementById("messageInput");
+
+const sendButton =
+    document.getElementById("sendButton");
+
+const typing =
+    document.getElementById("typing");
+
+const clearChat =
+    document.getElementById("clearChat");
+
+const newChat =
+    document.getElementById("newChat");
+
+const themeButton =
+    document.getElementById("themeButton");
+
+const mobileMenu =
+    document.getElementById("mobileMenu");
+
+const sidebar =
+    document.getElementById("sidebar");
+
+
+/* =====================================
+   MESSAGE STORAGE
+===================================== */
+
+let messages =
+    JSON.parse(
+        localStorage.getItem("chatMessages")
+    ) || [];
+
+
+/* =====================================
+   LOAD CHAT
+===================================== */
+
+function loadChat() {
+
+    if (messages.length === 0) {
+        return;
+    }
+
+    const welcome =
+        document.querySelector(".welcome");
+
+    if (welcome) {
+        welcome.style.display = "none";
+    }
+
+    messages.forEach(message => {
+
+        createMessage(
+            message.text,
+            message.sender,
+            message.time
+        );
+
+    });
+
+}
+
+loadChat();
+
+
+/* =====================================
+   SEND MESSAGE
+===================================== */
+
+function sendMessage() {
+
+    const text =
+        input.value.trim();
+
+    if (!text) {
+        return;
+    }
+
+
+    hideWelcome();
+
+
+    createMessage(
+        text,
+        "user"
+    );
+
+
+    saveMessage(
+        text,
+        "user"
+    );
+
+
+    input.value = "";
+
+    input.style.height = "auto";
+
+
+    showTyping();
+
+
+    setTimeout(() => {
+
+        hideTyping();
+
+        const response =
+            getBotResponse(text);
+
+
+        createMessage(
+            response,
+            "bot"
+        );
+
+
+        saveMessage(
+            response,
+            "bot"
+        );
+
+    }, 700 + Math.random() * 900);
+
+}
+
+
+/* =====================================
+   CREATE MESSAGE
+===================================== */
+
+function createMessage(
+    text,
+    sender,
+    customTime = null
+) {
+
+    const row =
+        document.createElement("div");
+
+    row.className =
+        "message-row " + sender;
+
+
+    const avatar =
+        document.createElement("div");
+
+    avatar.className =
+        "small-avatar " +
+        (sender === "bot"
+            ? "bot-avatar"
+            : "user-avatar");
+
+    avatar.textContent =
+        sender === "bot"
+            ? "🤖"
+            : "👤";
+
+
+    const content =
+        document.createElement("div");
+
+    content.className =
+        "message-content";
+
+
+    const message =
+        document.createElement("div");
+
+    message.className =
+        "message";
+
+    message.textContent =
+        text;
+
+
+    const time =
+        document.createElement("span");
+
+    time.className =
+        "time";
+
+    time.textContent =
+        customTime || getTime();
+
+
+    content.appendChild(message);
+    content.appendChild(time);
+
+
+    if (sender === "bot") {
+
+        row.appendChild(avatar);
+        row.appendChild(content);
+
+    } else {
+
+        row.appendChild(content);
+        row.appendChild(avatar);
+
+    }
+
+
+    chatBox.appendChild(row);
+
+    scrollBottom();
+}
+
+
+/* =====================================
+   SAVE MESSAGE
+===================================== */
+
+function saveMessage(
+    text,
+    sender
+) {
+
+    messages.push({
+
+        text: text,
+
+        sender: sender,
+
+        time: getTime()
+
+    });
+
+
+    localStorage.setItem(
+        "chatMessages",
+        JSON.stringify(messages)
+    );
+
+}
+
+
+/* =====================================
+   TIME
+===================================== */
+
+function getTime() {
+
+    return new Date()
+        .toLocaleTimeString([], {
+            hour: "2-digit",
+            minute: "2-digit"
+        });
+
+}
+
+
+/* =====================================
+   BOT INTELLIGENCE
+===================================== */
+
+function getBotResponse(inputText) {
+
+    const text =
+        inputText.toLowerCase().trim();
+
+
+    /* HELLO */
+
+    if (
+        text.includes("hello") ||
+        text.includes("hi") ||
+        text.includes("hey")
+    ) {
+
+        return "Hello! 👋 It's great to meet you. How can I help you?";
+
+    }
+
+
+    /* HOW ARE YOU */
+
+    if (
+        text.includes("how are you") ||
+        text.includes("how r u")
+    ) {
+
+        return "I'm doing great! 🤖 Thanks for asking.";
+
+    }
+
+
+    /* NAME */
+
+    if (
+        text.includes("your name") ||
+        text.includes("who are you")
+    ) {
+
+        return "I'm an advanced browser-based chatbot built with HTML, CSS and JavaScript.";
+
+    }
+
+
+    /* WHAT CAN YOU DO */
+
+    if (
+        text.includes("what can you do") ||
+        text.includes("help me")
+    ) {
+
+        return "I can chat with you, answer basic questions, tell jokes, explain HTML/CSS/JavaScript, show the current time and date, and remember our chat using localStorage.";
+
+    }
+
+
+    /* HTML */
+
+    if (
+        text.includes("html") ||
+        text.includes("what is html")
+    ) {
+
+        return "HTML stands for HyperText Markup Language. It provides the structure of a web page using elements such as headings, paragraphs, buttons, forms and images.";
+
+    }
+
+
+    /* CSS */
+
+    if (
+        text.includes("css") ||
+        text.includes("what is css")
+    ) {
+
+        return "CSS stands for Cascading Style Sheets. It controls how HTML elements look, including colors, layouts, spacing, animations and responsive design.";
+
+    }
+
+
+    /* JAVASCRIPT */
+
+    if (
+        text.includes("javascript") ||
+        text.includes("what is js")
+    ) {
+
+        return "JavaScript is a programming language that makes websites interactive. It can handle events, manipulate HTML/CSS, communicate with APIs and much more.";
+
+    }
+
+
+    /* WEBSITE */
+
+    if (
+        text.includes("website") ||
+        text.includes("web development")
+    ) {
+
+        return "A modern website commonly uses HTML for structure, CSS for design and JavaScript for functionality.";
+
+    }
+
+
+    /* JOKE */
+
+    if (
+        text.includes("joke") ||
+        text.includes("make me laugh")
+    ) {
+
+        const jokes = [
+
+            "Why do programmers prefer dark mode? Because light attracts bugs! 🐛😂",
+
+            "Why did the programmer quit his job? He didn't get arrays! 😂",
+
+            "A programmer's favorite place is the cache register. 💻😂",
+
+            "There are 10 types of people: those who understand binary and those who don't. 😄"
+
+        ];
+
+
+        return jokes[
+            Math.floor(
+                Math.random() * jokes.length
+            )
+        ];
+
+    }
+
+
+    /* TIME */
+
+    if (
+        text.includes("time") ||
+        text.includes("current time")
+    ) {
+
+        return "The current time is " +
+            getTime() +
+            " ⏰";
+
+    }
+
+
+    /* DATE */
+
+    if (
+        text.includes("date") ||
+        text.includes("today")
+    ) {
+
+        return "Today's date is " +
+            new Date().toLocaleDateString() +
+            " 📅";
+
+    }
+
+
+    /* THANKS */
+
+    if (
+        text.includes("thanks") ||
+        text.includes("thank you")
+    ) {
+
+        return "You're welcome! 😊";
+
+    }
+
+
+    /* GOODBYE */
+
+    if (
+        text.includes("bye") ||
+        text.includes("goodbye")
+    ) {
+
+        return "Goodbye! 👋 Have a wonderful day!";
+
+    }
+
+
+    /* LOVE */
+
+    if (
+        text.includes("i love you") ||
+        text.includes("love you")
+    ) {
+
+        return "Aww! ❤️ You're making my circuits happy! 🤖";
+
+    }
+
+
+    /* WEATHER */
+
+    if (
+        text.includes("weather")
+    ) {
+
+        return "I don't have live weather data in this offline version. 🌤️ You can connect this chatbot to a weather API to get real-time weather.";
+
+    }
+
+
+    /* DEFAULT RESPONSES */
+
+    const responses = [
+
+        "That's interesting! Tell me more. 🤔",
+
+        "I'm still learning. Could you explain that another way?",
+
+        "Interesting question! 😊",
+
+        "I don't have a specific answer for that yet.",
+
+        "I'm a browser-based chatbot, so my knowledge is limited to the responses programmed into me.",
+
+        "Try asking me about HTML, CSS, JavaScript, web development, jokes, time or dates."
+
+    ];
+
+
+    return responses[
+        Math.floor(
+            Math.random() *
+            responses.length
+        )
+    ];
+
+}
+
+
+/* =====================================
+   TYPING
+===================================== */
+
+function showTyping() {
+
+    typing.classList.add("show");
+
+    scrollBottom();
+
+}
+
+
+function hideTyping() {
+
+    typing.classList.remove("show");
+
+}
+
+
+/* =====================================
+   SCROLL
+===================================== */
+
+function scrollBottom() {
+
+    setTimeout(() => {
+
+        chatBox.scrollTop =
+            chatBox.scrollHeight;
+
+    }, 50);
+
+}
+
+
+/* =====================================
+   HIDE WELCOME
+===================================== */
+
+function hideWelcome() {
+
+    const welcome =
+        document.querySelector(".welcome");
+
+    if (welcome) {
+
+        welcome.style.display =
+            "none";
+
+    }
+
+}
+
+
+/* =====================================
+   QUICK MESSAGE
+===================================== */
+
+function quickMessage(message) {
+
+    input.value =
+        message;
+
+    sendMessage();
+
+}
+
+
+/* =====================================
+   ENTER KEY
+===================================== */
+
+input.addEventListener(
+    "keydown",
+    function(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+
+            event.preventDefault();
+
+            sendMessage();
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   AUTO RESIZE
+===================================== */
+
+input.addEventListener(
+    "input",
+    function() {
+
+        this.style.height =
+            "auto";
+
+        this.style.height =
+            Math.min(
+                this.scrollHeight,
+                120
+            ) + "px";
+
+    }
+);
+
+
+/* =====================================
+   SEND BUTTON
+===================================== */
+
+sendButton.addEventListener(
+    "click",
+    sendMessage
+);
+
+
+/* =====================================
+   CLEAR CHAT
+===================================== */
+
+clearChat.addEventListener(
+    "click",
+    function() {
+
+        if (
+            !confirm(
+                "Clear all chat messages?"
+            )
+        ) {
+            return;
+        }
+
+
+        messages = [];
+
+
+        localStorage.removeItem(
+            "chatMessages"
+        );
+
+
+        chatBox.innerHTML = "";
+
+
+        createWelcome();
+
+    }
+);
+
+
+/* =====================================
+   NEW CHAT
+===================================== */
+
+newChat.addEventListener(
+    "click",
+    function() {
+
+        messages = [];
+
+
+        localStorage.removeItem(
+            "chatMessages"
+        );
+
+
+        chatBox.innerHTML = "";
+
+
+        createWelcome();
+
+    }
+);
+
+
+/* =====================================
+   CREATE WELCOME SCREEN
+===================================== */
+
+function createWelcome() {
+
+    const welcome =
+        document.createElement("div");
+
+    welcome.className =
+        "welcome";
+
+
+    welcome.innerHTML = `
+
+        <div class="welcome-icon">
+            🤖
+        </div>
+
+        <h1>
+            Hello! 👋
+        </h1>
+
+        <p>
+            I'm your AI assistant. Ask me anything!
+        </p>
+
+        <div class="quick-buttons">
+
+            <button onclick="quickMessage('Hello')">
+                👋 Hello
+            </button>
+
+            <button onclick="quickMessage('What can you do?')">
+                ❓ What can you do?
+            </button>
+
+            <button onclick="quickMessage('Tell me a joke')">
+                😂 Tell me a joke
+            </button>
+
+            <button onclick="quickMessage('What is JavaScript?')">
+                💻 JavaScript
+            </button>
+
+        </div>
+
+    `;
+
+
+    chatBox.appendChild(welcome);
+
+}
+
+
+/* =====================================
+   DARK MODE
+===================================== */
+
+const savedTheme =
+    localStorage.getItem("theme");
+
+
+if (savedTheme === "dark") {
+
+    document.body.classList.add("dark");
+
+    themeButton.textContent =
+        "☀️ Light Mode";
+
+}
+
+
+themeButton.addEventListener(
+    "click",
+    function() {
+
+        document.body.classList.toggle(
+            "dark"
+        );
+
+
+        const dark =
+            document.body.classList.contains(
+                "dark"
+            );
+
+
+        if (dark) {
+
+            themeButton.textContent =
+                "☀️ Light Mode";
+
+            localStorage.setItem(
+                "theme",
+                "dark"
+            );
+
+        } else {
+
+            themeButton.textContent =
+                "🌙 Dark Mode";
+
+            localStorage.setItem(
+                "theme",
+                "light"
+            );
+
+        }
+
+    }
+);
+
+
+/* =====================================
+   MOBILE MENU
+===================================== */
+
+mobileMenu.addEventListener(
+    "click",
+    function() {
+
+        sidebar.classList.toggle(
+            "active"
+        );
+
+    }
+);
+
+</script>
+
+</body>
+</html>
